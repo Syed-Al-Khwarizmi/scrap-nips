@@ -1,1 +1,1 @@
-This directory is where all the pdf fies shall be downloaded
+This directory is where all the pdf files shall be downloaded
