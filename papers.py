@@ -5,18 +5,13 @@ import requests
 
 class Papers:
     def __init__(self):
-        pass
+        self.URL_PAPERS = "https://papers.nips.cc"
+        self.URL_PAPERS_BOOK = "https://papers.nips.cc/book/"
     
     def get(self, url):
-        sublinks = []
         connection = urlopen(url)
         dom = html.fromstring(connection.read())
-        for link in dom.xpath('//a/@href'):
-            if not link.startswith('https'):
-                sublinks.append(url+link)
-            else:
-                sublinks.append(link)
-        return sublinks
+        return list(map(lambda link: url+link if not link.startswith('https') else link, dom.xpath('//a/@href')))
     
     def download(self, download_url):
         response = urlopen(download_url)
@@ -27,8 +22,8 @@ class Papers:
         return None
     
     def filter(self):
-        NIPS_main = self.get('https://papers.nips.cc')
-        NIPS_main = [x for x in NIPS_main if ('https://papers.nips.cc/book/' in x)]
+        NIPS_main = self.get(self.URL_PAPERS)
+        NIPS_main = [x for x in NIPS_main if (self.URL_PAPERS_BOOK in x)]
         outer_list = []
         for x in NIPS_main:
             print(x)
@@ -37,5 +32,5 @@ class Papers:
             filtered_pings = [x.replace('/{}/'.format(to_remove), '') for x in filtered_pings]
             filtered_pings = [x.replace('book', '') for x in filtered_pings]
             outer_list.append(filtered_pings)
-            
+
         return outer_list
